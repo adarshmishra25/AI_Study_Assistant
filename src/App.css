@@ -24,6 +24,15 @@ button {
   border-radius: 8px;
 }
 
+input{
+  width: 90px;
+}
+
+button:hover{
+  scale: 1.03 ;
+  transition: 0.1s all;
+}
+
 button:active{
   scale: 0.98;
 }
