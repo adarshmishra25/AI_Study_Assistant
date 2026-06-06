@@ -1,18 +1,21 @@
 export const Upload = ({ setDocuments }) => {
   return (
-    <input
-      type="file"
-      accept=".pdf"
-      onChange={(event) => {
-        const file = event.target.files[0];
+    <label className="upload-btn">
+      📄 Upload PDF
 
-        // console.log("Selected file:", file);
+      <input
+        type="file"
+        accept=".pdf"
+        hidden
+        onChange={(event) => {
+          const file = event.target.files[0];
 
-        setDocuments((prevDocs) => [
-          ...prevDocs,
-          file
-        ]);
-      }}
-    />
+          setDocuments((prevDocs) => [
+            ...prevDocs,
+            file
+          ]);
+        }}
+      />
+    </label>
   );
 };

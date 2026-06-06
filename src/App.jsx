@@ -9,13 +9,26 @@ import { Actions } from "./components/Actions";
 function App() {
   const [documents, setDocuments] = useState([]);
 
+  const removeDocument = (indexToRemove) => {
+  console.log("Removing:", indexToRemove);
+
+  setDocuments(
+    documents.filter(
+      (_, index) => index !== indexToRemove
+    )
+  );
+};
+
   return (
     <div className="main">
       <Header />
 
       <Upload setDocuments={setDocuments} />
 
-      <Documents documents={documents} />
+      <Documents
+        documents={documents}
+        removeDocument={removeDocument}
+      />
 
       <Actions />
     </div>

@@ -1,14 +1,19 @@
-export const Documents = ({ documents }) => {
+export const Documents = ({ documents, removeDocument }) => {
 
     // console.log("Documents:", documents);
     return (
         <div className="documents">
             <h2>Uploaded Documents</h2>
+            <p>Total Documents: {documents.length}</p>
             {documents.length > 0 ? (
                 <ul>
                     {documents.map((doc, index) => (
                         <li key={index}>
-                            {doc.name}
+                            <span>{doc.name}</span>
+
+                            <button onClick={() => removeDocument(index)}>
+                                Remove
+                            </button>
                         </li>
                     ))}
                 </ul>

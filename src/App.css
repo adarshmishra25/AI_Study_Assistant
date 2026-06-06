@@ -45,6 +45,74 @@ ul{
   gap: 10px;
 }
 
+.documents ul {
+  list-style: none;
+  padding: 0;
+}
+
+.documents li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin: 10px 0;
+  padding: 12px;
+
+  border: 1px solid white;
+  border-radius: 8px;
+}
+
+.documents li {
+  width: 80%;
+  margin: 15px auto;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 20px;
+  border: 1px solid white;
+  border-radius: 10px;
+}
+
+.documents li span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.documents li button {
+  background: crimson;
+  color: white;
+
+  border: none;
+  padding: 8px 12px;
+
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.documents li button:hover {
+  opacity: 0.8;
+}
+
+.upload-btn {
+  display: inline-block;
+  padding: 15px 30px;
+  margin: 20px;
+  border: 2px solid white;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  transition: 0.3s;
+}
+
+.upload-btn:hover {
+  transform: scale(1.05);
+  background-color: rgba(255,255,255,0.1);
+}
+
 .action, .documents , .heading{
   display: flex;
   gap: 5px;
