@@ -7,15 +7,15 @@ import { Documents } from "./components/Documents";
 import { Actions } from "./components/Actions";
 
 function App() {
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [documents, setDocuments] = useState([]);
 
   return (
     <div className="main">
       <Header />
 
-      <Upload setSelectedFile={setSelectedFile} />
+      <Upload setDocuments={setDocuments} />
 
-      <Documents selectedFile={selectedFile} />
+      <Documents documents={documents} />
 
       <Actions />
     </div>

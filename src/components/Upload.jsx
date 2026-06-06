@@ -1,10 +1,17 @@
-export const Upload = ({ setSelectedFile }) => {
+export const Upload = ({ setDocuments }) => {
   return (
     <input
       type="file"
       accept=".pdf"
       onChange={(event) => {
-        setSelectedFile(event.target.files[0]);
+        const file = event.target.files[0];
+
+        // console.log("Selected file:", file);
+
+        setDocuments((prevDocs) => [
+          ...prevDocs,
+          file
+        ]);
       }}
     />
   );
