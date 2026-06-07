@@ -1,37 +1,20 @@
-import { useState } from "react";
-import "./App.css";
+import { Routes, Route } from "react-router-dom";
 
-import { Header } from "./components/Header";
-import { Upload } from "./components/Upload";
-import { Documents } from "./components/Documents";
-import { Actions } from "./components/Actions";
+import { Home } from "./pages/Home";
+import { Summary } from "./pages/Summary";
+import { KeyPoints } from "./pages/KeyPoints";
+import { Quiz } from "./pages/Quiz";
+import { Questions } from "./pages/Question";
 
 function App() {
-  const [documents, setDocuments] = useState([]);
-
-  const removeDocument = (indexToRemove) => {
-  console.log("Removing:", indexToRemove);
-
-  setDocuments(
-    documents.filter(
-      (_, index) => index !== indexToRemove
-    )
-  );
-};
-
   return (
-    <div className="main">
-      <Header />
-
-      <Upload setDocuments={setDocuments} />
-
-      <Documents
-        documents={documents}
-        removeDocument={removeDocument}
-      />
-
-      <Actions />
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/summary" element={<Summary />} />
+      <Route path="/keypoints" element={<KeyPoints />} />
+      <Route path="/quiz" element={<Quiz />} />
+      <Route path="/questions" element={<Questions />} />
+    </Routes>
   );
 }
 

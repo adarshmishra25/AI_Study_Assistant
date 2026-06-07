@@ -1,13 +1,23 @@
-import { SectionTitle } from "./SectionTitle";
+import { Link } from "react-router-dom";
 
 export const Actions = () => {
-    return (
-        <div className="action">
-            <SectionTitle title="Actions" />
-            <button >Generate Summary</button>
-            <button>Generate Key Points</button>
-            <button>Generate Quiz</button>
-            <button>Ask Questions</button>
-        </div>
-    )
-}
+  return (
+    <div className="action">
+      <Link to="/summary">
+        <button>Generate Summary</button>
+      </Link>
+
+      <Link to="/keypoints">
+        <button>Generate Key Points</button>
+      </Link>
+
+      <Link to="/quiz">
+        <button>Generate Quiz</button>
+      </Link>
+
+      <Link to="/questions">
+        <button>Ask Questions</button>
+      </Link>
+    </div>
+  );
+};
