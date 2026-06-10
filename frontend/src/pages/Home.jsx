@@ -4,7 +4,7 @@ import "../App.css";
 import { Header } from "../components/Header";
 import { Upload } from "../components/Upload";
 import { Documents } from "../components/Documents";
-import { KeyPoints } from "../pages/KeyPoints";
+import { KeyPoints } from "./KeyPoints";
 import { Actions } from "../components/Actions";
 
 
