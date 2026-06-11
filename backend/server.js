@@ -3,7 +3,8 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors()); // <-- add this
+app.use(cors()); 
+app.use(express.json());
 
 app.get("/", (req, res) => {
     res.send("AI Study Assistant Backend");
@@ -35,6 +36,14 @@ app.get("/ask", (req, res) => {
     res.json({
         answer: "This is a Sample answer"
     });
+});
+
+app.post("/ask", (req, res) => {
+  const question = req.body.question;
+
+  res.json({
+    answer: `You asked: ${question}`
+  });
 });
 
 

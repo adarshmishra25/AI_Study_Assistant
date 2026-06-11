@@ -3,24 +3,36 @@ import axios from "axios";
 
 export const Questions = () => {
   const [question, setQuestion] = useState("");
+  const [answer, setAnswer] = useState("");
 
-  const getQuestion = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/ask"
+  const askQuestion = async () => {
+    const response = await axios.post(
+      "http://localhost:5000/ask",
+      {
+        question: question
+      }
     );
 
-    setQuestion(response.data.answer);
+    setAnswer(response.data.answer);
   };
 
   return (
     <div>
-      <h1>Question Page</h1>
+      <h1>Ask Questions</h1>
 
-      <button onClick={getQuestion}>
-        Fetch Answer
+      <input
+        type="text"
+        value={question}
+        onChange={(e) =>
+          setQuestion(e.target.value)
+        }
+      />
+
+      <button onClick={askQuestion}>
+        Ask
       </button>
 
-      <p>{question}</p>
+      <p>{answer}</p>
     </div>
   );
 };
