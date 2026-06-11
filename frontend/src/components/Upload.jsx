@@ -19,12 +19,15 @@ export const Upload = ({ setDocuments }) => {
     formData.append("pdf", file);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/upload",
-        formData
-      );
+      const response =
+        await axios.post(
+          "http://localhost:5000/upload",
+          formData
+        );
 
-      console.log(response.data);
+      console.log(
+        response.data.text
+      );
     } catch (error) {
       console.error("Upload failed:", error);
     }
