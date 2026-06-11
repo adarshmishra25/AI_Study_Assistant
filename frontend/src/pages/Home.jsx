@@ -6,6 +6,7 @@ import { Upload } from "../components/Upload";
 import { Documents } from "../components/Documents";
 import { KeyPoints } from "./KeyPoints";
 import { Actions } from "../components/Actions";
+import axios from "axios";
 
 
 export const Home = () => {

@@ -1,4 +1,35 @@
+import axios from "axios";
+
 export const Upload = ({ setDocuments }) => {
+
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    // Update UI
+    setDocuments((prevDocs) => [
+      ...prevDocs,
+      file
+    ]);
+
+    // Send file to backend
+    const formData = new FormData();
+
+    formData.append("pdf", file);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/upload",
+        formData
+      );
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Upload failed:", error);
+    }
+  };
+
   return (
     <label className="upload-btn">
       📄 Upload PDF
@@ -7,14 +38,7 @@ export const Upload = ({ setDocuments }) => {
         type="file"
         accept=".pdf"
         hidden
-        onChange={(event) => {
-          const file = event.target.files[0];
-
-          setDocuments((prevDocs) => [
-            ...prevDocs,
-            file
-          ]);
-        }}
+        onChange={handleUpload}
       />
     </label>
   );
