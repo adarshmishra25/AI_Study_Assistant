@@ -1,17 +1,37 @@
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
-
-let pdfText = "";
-let summary = "";
+const prisma = require("../prismaClient");
 
 const getHome = (req, res) => {
   res.send("AI Study Assistant Backend");
 };
 
-const getSummary = (req, res) => {
-  res.json({
-    summary,
-  });
+const getSummary = async (req, res) => {
+  try {
+    const document =
+      await prisma.document.findFirst({
+        orderBy: {
+          id: "desc",
+        },
+      });
+
+    res.json({
+      summary:
+        document.extractedText.substring(
+          0,
+          300
+        ),
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Failed to fetch summary",
+    });
+
+  }
 };
 
 const getKeyPoints = (req, res) => {
@@ -52,13 +72,13 @@ const uploadPDF = async (req, res) => {
     const pdfData =
       await pdfParse(dataBuffer);
 
-    pdfText = pdfData.text;
+    const extractedText = pdfData.text;
 
-    summary =
-      pdfText.substring(0, 300);
-
-    res.json({
-      message: "PDF uploaded successfully",
+    await prisma.document.create({
+      data: {
+        filename: req.file.originalname,
+        extractedText,
+      },
     });
 
   } catch (error) {
