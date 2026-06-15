@@ -6,14 +6,18 @@ const getHome = (req, res) => {
   res.send("AI Study Assistant Backend");
 };
 
+async function getLatestDocument() {
+  return await prisma.document.findFirst({
+    orderBy: {
+      id: "desc",
+    },
+  });
+}
+
 const getSummary = async (req, res) => {
   try {
     const document =
-      await prisma.document.findFirst({
-        orderBy: {
-          id: "desc",
-        },
-      });
+      await getLatestDocument();
 
     res.json({
       summary:
@@ -24,13 +28,11 @@ const getSummary = async (req, res) => {
     });
 
   } catch (error) {
-
     console.log(error);
 
     res.status(500).json({
       error: "Failed to fetch summary",
     });
-
   }
 };
 
