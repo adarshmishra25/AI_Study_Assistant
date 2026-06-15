@@ -15,6 +15,7 @@ export const Summary = () => {
         await axios.get(
           "http://localhost:5000/summary"
         );
+        console.log(response.data);
 
       setSummary(
         response.data.summary

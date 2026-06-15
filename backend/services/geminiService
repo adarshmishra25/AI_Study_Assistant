@@ -1,0 +1,32 @@
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+
+async function generateSummary(text) {
+  try {
+    const prompt = `
+    Summarize the following document:
+
+    ${text}
+    `;
+
+    const result =
+      await model.generateContent(prompt);
+
+    return result.response.text();
+
+  } catch (error) {
+
+    if (error.status === 429) {
+      return "Gemini quota exceeded. Please try again later.";
+    }
+
+    throw error;
+  }
+}
+
+module.exports = {
+    generateSummary,
+};
