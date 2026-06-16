@@ -1,24 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export const Quiz = () => {
-  const [quiz, setQuiz] = useState("");
 
-  const getQuiz = async () => {
-    const response = await axios.get(
-      "http://localhost:5000/quiz"
-    );
+  const [quiz, setQuiz] =
+    useState("");
 
-    setQuiz(response.data.question);
-  };
+  useEffect(() => {
+
+    const fetchQuiz =
+      async () => {
+
+        const response =
+          await axios.get(
+            "http://localhost:5000/quiz"
+          );
+
+        setQuiz(
+          response.data.quiz
+        );
+      };
+
+    fetchQuiz();
+
+  }, []);
 
   return (
     <div>
-      <h1>Quiz Page</h1>
-
-      <button onClick={getQuiz}>
-        Fetch Questions
-      </button>
+      <h1>Quiz</h1>
 
       <p>{quiz}</p>
     </div>

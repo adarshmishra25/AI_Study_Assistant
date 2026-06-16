@@ -55,7 +55,38 @@ ${text}
   return result.response.text();
 }
 
+
+
+async function generateQuiz(text) {
+
+  const prompt = `
+Create 5 multiple-choice questions
+from the document.
+
+Format:
+
+Q1. Question?
+
+A) Option
+B) Option
+C) Option
+D) Option
+
+Answer: A
+
+Document:
+
+${text}
+`;
+
+  const result =
+    await model.generateContent(prompt);
+
+  return result.response.text();
+}
+
 module.exports = {
   generateSummary,
   generateKeyPoints,
+  generateQuiz,
 };
