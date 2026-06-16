@@ -1,7 +1,10 @@
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const prisma = require("../prismaClient");
-const { generateSummary } = require("../services/geminiService");
+const {
+  generateSummary,
+  generateKeyPoints,
+} = require("../services/geminiService");
 
 const getHome = (req, res) => {
   res.send("AI Study Assistant Backend");
@@ -32,14 +35,28 @@ const getSummary = async (req, res) => {
     res.status(500).json({
       error: "Failed to fetch summary",
     });
-
   }
 };
 
-const getKeyPoints = (req, res) => {
-  res.json({
-    points: ["React", "Express", "Axios"],
-  });
+const getKeyPoints = async (req, res) => {
+  try {
+
+    const document =
+      await getLatestDocument();
+
+    res.json({
+      keyPoints: document.keyPoints,
+    });
+
+  } catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+      error: "Failed to fetch key points",
+    });
+
+  }
 };
 
 const getQuiz = (req, res) => {
@@ -63,6 +80,7 @@ const postAsk = (req, res) => {
 };
 
 const uploadPDF = async (req, res) => {
+  console.log("Upload started");
   try {
     const dataBuffer =
       fs.readFileSync(req.file.path);
@@ -76,8 +94,25 @@ const uploadPDF = async (req, res) => {
         .replace(/[\x00-\x1F\x7F]/g, "")
         .trim();
 
-    const summary =
-      await generateSummary(extractedText);
+    let summary =
+      "Summary generation unavailable.";
+
+    let keyPoints =
+      "Key point generation unavailable.";
+
+    try {
+      summary =
+        await generateSummary(extractedText);
+    } catch (error) {
+      console.log("Summary Error:", error);
+    }
+
+    try {
+      keyPoints =
+        await generateKeyPoints(extractedText);
+    } catch (error) {
+      console.log("Key Points Error:", error);
+    }
 
     const cleanSummary =
       summary
@@ -85,13 +120,24 @@ const uploadPDF = async (req, res) => {
         .replace(/[\x00-\x1F\x7F]/g, "")
         .trim();
 
+    const cleanKeyPoints =
+      keyPoints
+        .replace(/\0/g, "")
+        .replace(/[\x00-\x1F\x7F]/g, "")
+        .trim();
+
+    console.log("About to save document");
+
     await prisma.document.create({
       data: {
         filename: req.file.originalname,
         extractedText,
         summary: cleanSummary,
+        keyPoints: cleanKeyPoints
       },
     });
+
+    console.log("Document saved");
 
     res.json({
       message: "PDF uploaded successfully",

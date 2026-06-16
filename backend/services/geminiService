@@ -7,18 +7,24 @@ const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 async function generateSummary(text) {
   try {
     const prompt = `
-    Summarize the following document:
+    Rules:
+- Use plain English.
+- Write one paragraph.
+- Maximum 10 sentences.
+- Do NOT use markdown.
+- Do NOT use headings.
+- Do NOT use bullet points.
+- Do NOT use ** or # symbols.
+    
+    document:
 
     ${text}
     `;
 
-    const result =
-      await model.generateContent(prompt);
+    const result = await model.generateContent(prompt);
 
     return result.response.text();
-
   } catch (error) {
-
     if (error.status === 429) {
       return "Gemini quota exceeded. Please try again later.";
     }
@@ -27,6 +33,29 @@ async function generateSummary(text) {
   }
 }
 
+async function generateKeyPoints(text) {
+  const prompt = `
+Extract ONLY key points from the document.
+
+Rules:
+- Return exactly 10 bullet points.
+- Each bullet point must be one short sentence.
+- Do NOT write paragraphs.
+- Do NOT write introductions.
+- Do NOT write conclusions.
+- Start every point with "-".
+
+Document:
+
+${text}
+`;
+
+  const result = await model.generateContent(prompt);
+
+  return result.response.text();
+}
+
 module.exports = {
-    generateSummary,
+  generateSummary,
+  generateKeyPoints,
 };
