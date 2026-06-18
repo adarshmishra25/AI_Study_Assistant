@@ -1,7 +1,6 @@
 import { SectionTitle } from "./SectionTitle";
 export const Documents = ({ documents, removeDocument }) => {
 
-    // console.log("Documents:", documents);
     return (
         <div className="documents">
             <SectionTitle title="Uploaded Documents" />

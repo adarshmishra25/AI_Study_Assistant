@@ -2,27 +2,18 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 export const Quiz = () => {
-
-  const [quiz, setQuiz] =
-    useState("");
+  const [quiz, setQuiz] = useState("");
 
   useEffect(() => {
+    const fetchQuiz = async () => {
+      const documentId = localStorage.getItem("currentDocumentId");
 
-    const fetchQuiz =
-      async () => {
+      const response = await axios.get(`http://localhost:5000/quiz/${documentId}`);
 
-        const response =
-          await axios.get(
-            "http://localhost:5000/quiz"
-          );
-
-        setQuiz(
-          response.data.quiz
-        );
-      };
+      setQuiz(response.data.quiz);
+    };
 
     fetchQuiz();
-
   }, []);
 
   return (

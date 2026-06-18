@@ -85,8 +85,38 @@ ${text}
   return result.response.text();
 }
 
+
+async function askQuestion(
+  text,
+  question
+) {
+
+  const prompt = `
+Answer the question using
+only the information in
+the document.
+
+Document:
+
+${text}
+
+Question:
+
+${question}
+`;
+
+  const result =
+    await model.generateContent(
+      prompt
+    );
+
+  return result.response.text();
+}
+
+
 module.exports = {
   generateSummary,
   generateKeyPoints,
   generateQuiz,
+  askQuestion,
 };

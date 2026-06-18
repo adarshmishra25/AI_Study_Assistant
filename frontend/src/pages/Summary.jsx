@@ -2,28 +2,22 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
-
 export const Summary = () => {
-
   const [summary, setSummary] = useState("");
 
   useEffect(() => {
-
     const fetchSummary = async () => {
+      const documentId = localStorage.getItem("currentDocumentId");
 
-      const response =
-        await axios.get(
-          "http://localhost:5000/summary"
-        );
-        console.log(response.data);
-
-      setSummary(
-        response.data.summary
+      const response = await axios.get(
+        `http://localhost:5000/summary/${documentId}`,
       );
+      console.log(response.data);
+
+      setSummary(response.data.summary);
     };
 
     fetchSummary();
-
   }, []);
 
   return (

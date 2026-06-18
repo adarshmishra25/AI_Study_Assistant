@@ -1,26 +1,80 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../App.css";
 
 import { Header } from "../components/Header";
 import { Upload } from "../components/Upload";
 import { Documents } from "../components/Documents";
-import { KeyPoints } from "./KeyPoints";
 import { Actions } from "../components/Actions";
 import axios from "axios";
-
 
 export const Home = () => {
   const [documents, setDocuments] = useState([]);
 
-  const removeDocument = (indexToRemove) => {
-  console.log("Removing:", indexToRemove);
+  useEffect(() => {
+    const loadDocuments = async () => {
+      const ids = JSON.parse(localStorage.getItem("uploadedDocuments") || "[]");
 
-  setDocuments(
-    documents.filter(
-      (_, index) => index !== indexToRemove
-    )
-  );
-};
+      if (ids.length === 0) return;
+
+      try {
+        const loadedDocuments = [];
+
+        for (const id of ids) {
+          const response = await axios.get(
+            `http://localhost:5000/documents/${id}`,
+          );
+
+          loadedDocuments.unshift({
+            id: response.data.id,
+            name: response.data.filename,
+          });
+        }
+
+        setDocuments(loadedDocuments);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    loadDocuments();
+  }, []);
+
+  const removeDocument = async (indexToRemove) => {
+    const documentToDelete = documents[indexToRemove];
+
+    await axios.delete(
+      `http://localhost:5000/documents/${documentToDelete.id}`,
+    );
+
+    const uploadedDocuments = JSON.parse(
+      localStorage.getItem("uploadedDocuments") || "[]",
+    );
+
+    const updatedIds = uploadedDocuments.filter(
+      (id) => id !== documentToDelete.id,
+    );
+
+    localStorage.setItem("uploadedDocuments", JSON.stringify(updatedIds));
+
+    const updatedDocuments = documents.filter(
+      (_, index) => index !== indexToRemove,
+    );
+
+    setDocuments(updatedDocuments);
+
+    const currentDocumentId = localStorage.getItem("currentDocumentId");
+
+    if (Number(currentDocumentId) === documentToDelete.id) {
+      if (updatedIds.length > 0) {
+        localStorage.setItem(
+          "currentDocumentId",
+          updatedIds[updatedIds.length - 1],
+        );
+      } else {
+        localStorage.removeItem("currentDocumentId");
+      }
+    }
+  };
 
   return (
     <div className="main">
@@ -28,10 +82,7 @@ export const Home = () => {
 
       <Upload setDocuments={setDocuments} />
 
-      <Documents
-        documents={documents}
-        removeDocument={removeDocument}
-      />
+      <Documents documents={documents} removeDocument={removeDocument} />
 
       <Actions />
     </div>

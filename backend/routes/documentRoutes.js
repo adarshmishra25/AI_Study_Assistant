@@ -1,69 +1,49 @@
 const express = require("express");
 const multer = require("multer");
 
-
 const {
-    getHome,
-    getSummary,
-    getKeyPoints,
-    getQuiz,
-    getAsk,
-    postAsk,
-    uploadPDF,
-} = require(
-    "../controllers/documentController"
-);
+  getHome,
+  getSummary,
+  getKeyPoints,
+  getQuiz,
+  getAsk,
+  postAsk,
+  uploadPDF,
+  getDocument,
+  deleteDocument,
+} = require("../controllers/documentController");
 
 const router = express.Router();
 
-const storage =
-    multer.diskStorage({destination: (req,file,cb) => {
-            cb(null,"uploads/");
-        },
-        filename: (req,file,cb) => {
-            cb(null,Date.now() +"-" +file.originalname);
-        },
-    });
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
 
-const upload =
-    multer({
-        storage,
-    });
+const upload = multer({
+  storage,
+});
 
-router.get(
-    "/",
-    getHome
-);
+router.get("/", getHome);
 
-router.get(
-    "/summary",
-    getSummary
-);
+router.delete("/documents/:id", deleteDocument);
 
-router.get(
-    "/keypoints",
-    getKeyPoints
-);
+router.get("/summary/:id", getSummary);
 
-router.get(
-    "/quiz",
-    getQuiz
-);
+router.get("/keypoints/:id", getKeyPoints);
 
-router.get(
-    "/ask",
-    getAsk
-);
+router.get("/quiz/:id", getQuiz);
 
-router.post(
-    "/ask",
-    postAsk
-);
+router.get("/ask", getAsk);
 
-router.post(
-    "/upload",
-    upload.single("pdf"),
-    uploadPDF
-);
+router.get("/documents/:id", getDocument);
+
+router.post("/ask/:id", postAsk);
+
+router.post("/upload", upload.single("pdf"), uploadPDF);
 
 module.exports = router;

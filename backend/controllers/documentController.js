@@ -11,17 +11,44 @@ const getHome = (req, res) => {
   res.send("AI Study Assistant Backend");
 };
 
-async function getLatestDocument() {
-  return await prisma.document.findFirst({
-    orderBy: {
-      id: "desc",
+async function getDocumentById(id) {
+  return await prisma.document.findUnique({
+    where: {
+      id: Number(id),
     },
   });
 }
 
+const getDocument = async (req, res) => {
+  try {
+    const document = await getDocumentById(req.params.id);
+
+    if (!document) {
+      return res.status(404).json({
+        error: "Document not found",
+      });
+    }
+
+    res.json({
+      id: document.id,
+      filename: document.filename,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error: "Failed to fetch document",
+    });
+  }
+};
+
 const getSummary = async (req, res) => {
   try {
-    const document = await getLatestDocument();
+    console.log("Document ID:", req.params.id);
+
+    const document = await getDocumentById(req.params.id);
+
+    console.log(document);
 
     res.json({
       summary: document.summary,
@@ -37,7 +64,7 @@ const getSummary = async (req, res) => {
 
 const getKeyPoints = async (req, res) => {
   try {
-    const document = await getLatestDocument();
+    const document = await getDocumentById(req.params.id);
 
     res.json({
       keyPoints: document.keyPoints,
@@ -53,23 +80,17 @@ const getKeyPoints = async (req, res) => {
 
 const getQuiz = async (req, res) => {
   try {
-
-    const document =
-      await getLatestDocument();
+    const document = await getDocumentById(req.params.id);
 
     res.json({
       quiz: document.quiz,
     });
-
   } catch (error) {
-
     console.log(error);
 
     res.status(500).json({
-      error:
-        "Failed to fetch quiz",
+      error: "Failed to fetch quiz",
     });
-
   }
 };
 
@@ -79,12 +100,26 @@ const getAsk = (req, res) => {
   });
 };
 
-const postAsk = (req, res) => {
-  const question = req.body.question;
+const { askQuestion } = require("../services/geminiService");
 
-  res.json({
-    answer: `You asked: ${question}`,
-  });
+const postAsk = async (req, res) => {
+  try {
+    const question = req.body.question;
+
+    const document = await getDocumentById(req.params.id);
+
+    const answer = await askQuestion(document.extractedText, question);
+
+    res.json({
+      answer,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error: "Failed to answer question",
+    });
+  }
 };
 
 const uploadPDF = async (req, res) => {
@@ -140,7 +175,7 @@ const uploadPDF = async (req, res) => {
 
     console.log("About to save document");
 
-    await prisma.document.create({
+    const document = await prisma.document.create({
       data: {
         filename: req.file.originalname,
         extractedText,
@@ -154,12 +189,33 @@ const uploadPDF = async (req, res) => {
 
     res.json({
       message: "PDF uploaded successfully",
+      documentId: document.id,
     });
   } catch (error) {
     console.log(error);
 
     res.status(500).json({
       error: "Failed to read PDF",
+    });
+  }
+};
+
+const deleteDocument = async (req, res) => {
+  try {
+    await prisma.document.delete({
+      where: {
+        id: Number(req.params.id),
+      },
+    });
+
+    res.json({
+      message: "Document deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      error: "Failed to delete document",
     });
   }
 };
@@ -172,4 +228,6 @@ module.exports = {
   getAsk,
   postAsk,
   uploadPDF,
+  getDocument,
+  deleteDocument,
 };

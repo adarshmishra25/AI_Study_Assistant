@@ -6,12 +6,16 @@ export const Questions = () => {
   const [answer, setAnswer] = useState("");
 
   const askQuestion = async () => {
+    const documentId = localStorage.getItem("currentDocumentId");
+
     const response = await axios.post(
-      "http://localhost:5000/ask",
+      `http://localhost:5000/ask/${documentId}`,
       {
-        question: question
-      }
+        question,
+      },
     );
+
+    setAnswer(response.data.answer);
 
     setAnswer(response.data.answer);
   };
@@ -23,14 +27,10 @@ export const Questions = () => {
       <input
         type="text"
         value={question}
-        onChange={(e) =>
-          setQuestion(e.target.value)
-        }
+        onChange={(e) => setQuestion(e.target.value)}
       />
 
-      <button onClick={askQuestion}>
-        Ask
-      </button>
+      <button onClick={askQuestion}>Ask</button>
 
       <p>{answer}</p>
     </div>
