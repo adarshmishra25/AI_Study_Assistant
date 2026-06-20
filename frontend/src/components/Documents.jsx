@@ -1,27 +1,38 @@
-import { SectionTitle } from "./SectionTitle";
-export const Documents = ({ documents, removeDocument }) => {
+export const Documents = ({
+  documents,
+  removeDocument,
+  selectedId,
+  setSelectedId,
+}) => {
+  return (
+    <div className="documents">
+      {documents.map((doc, index) => (
+        <li
+          key={doc.id}
+          className={
+            Number(selectedId) === doc.id
+              ? "document-item active-document"
+              : "document-item"
+          }
+        >
+          <span
+            onClick={() => {
+              localStorage.setItem("currentDocumentId", doc.id);
 
-    return (
-        <div className="documents">
-            <SectionTitle title="Uploaded Documents" />
-            <p className="doc-count">
-                📚 Documents :{documents.length} 
-            </p>
-            {documents.length > 0 ? (
-                <ul>
-                    {documents.map((doc, index) => (
-                        <li key={index}>
-                            <span>📄{doc.name}</span>
+              setSelectedId(doc.id);
 
-                            <button onClick={() => removeDocument(index)}>
-                                Remove
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                <p>Upload a PDF to get started.</p>
+              window.location.reload();
+            }}
+          >
+            📄 {doc.name}
+            {Number(selectedId) === doc.id && (
+              <span className="current-badge"> • (Active)</span>
             )}
-        </div>
-    );
+          </span>
+
+          <button onClick={() => removeDocument(index)}>Remove</button>
+        </li>
+      ))}
+    </div>
+  );
 };

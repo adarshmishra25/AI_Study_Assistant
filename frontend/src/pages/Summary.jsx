@@ -1,30 +1,63 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import {Typewriter} from "../components/Typewriter";
 
 export const Summary = () => {
   const [summary, setSummary] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const fetchSummary = async () => {
-      const documentId = localStorage.getItem("currentDocumentId");
+      try {
+        const documentId = localStorage.getItem("currentDocumentId");
 
-      const response = await axios.get(
-        `http://localhost:5000/summary/${documentId}`,
-      );
-      console.log(response.data);
+        const response = await axios.get(
+          `http://localhost:5000/summary/${documentId}`,
+        );
 
-      setSummary(response.data.summary);
+        setSummary(response.data.summary);
+      } catch (error) {
+        console.log(error);
+
+        setError("Failed to load summary.");
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchSummary();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="outputs-page">
+        <h1>Summary</h1>
+        <p>⏳ Loading Summary...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="outputs-page">
+        <h1>Summary</h1>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
+    <div className="outputs-page">
       <h1>Summary</h1>
 
-      <p>{summary}</p>
+      <div className="content-card "
+        style={{
+          whiteSpace: "pre-wrap",
+        }}
+      >
+        <Typewriter text={summary} />
+      </div>
     </div>
   );
 };

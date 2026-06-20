@@ -1,10 +1,10 @@
 const fs = require("fs");
 const pdfParse = require("pdf-parse");
 const prisma = require("../prismaClient");
+
 const {
-  generateSummary,
-  generateKeyPoints,
-  generateQuiz,
+  generateStudyMaterials,
+  askQuestion,
 } = require("../services/geminiService");
 
 const getHome = (req, res) => {
@@ -21,7 +21,9 @@ async function getDocumentById(id) {
 
 const getDocument = async (req, res) => {
   try {
-    const document = await getDocumentById(req.params.id);
+    const document = await getDocumentById(
+      req.params.id
+    );
 
     if (!document) {
       return res.status(404).json({
@@ -44,11 +46,9 @@ const getDocument = async (req, res) => {
 
 const getSummary = async (req, res) => {
   try {
-    console.log("Document ID:", req.params.id);
-
-    const document = await getDocumentById(req.params.id);
-
-    console.log(document);
+    const document = await getDocumentById(
+      req.params.id
+    );
 
     res.json({
       summary: document.summary,
@@ -64,7 +64,9 @@ const getSummary = async (req, res) => {
 
 const getKeyPoints = async (req, res) => {
   try {
-    const document = await getDocumentById(req.params.id);
+    const document = await getDocumentById(
+      req.params.id
+    );
 
     res.json({
       keyPoints: document.keyPoints,
@@ -80,7 +82,9 @@ const getKeyPoints = async (req, res) => {
 
 const getQuiz = async (req, res) => {
   try {
-    const document = await getDocumentById(req.params.id);
+    const document = await getDocumentById(
+      req.params.id
+    );
 
     res.json({
       quiz: document.quiz,
@@ -100,15 +104,18 @@ const getAsk = (req, res) => {
   });
 };
 
-const { askQuestion } = require("../services/geminiService");
-
 const postAsk = async (req, res) => {
   try {
     const question = req.body.question;
 
-    const document = await getDocumentById(req.params.id);
+    const document = await getDocumentById(
+      req.params.id
+    );
 
-    const answer = await askQuestion(document.extractedText, question);
+    const answer = await askQuestion(
+      document.extractedText,
+      question
+    );
 
     res.json({
       answer,
@@ -124,39 +131,73 @@ const postAsk = async (req, res) => {
 
 const uploadPDF = async (req, res) => {
   console.log("Upload started");
-  try {
-    const dataBuffer = fs.readFileSync(req.file.path);
 
-    const pdfData = await pdfParse(dataBuffer);
+  try {
+    const dataBuffer = fs.readFileSync(
+      req.file.path
+    );
+
+    const pdfData = await pdfParse(
+      dataBuffer
+    );
 
     const extractedText = pdfData.text
       .replace(/\0/g, "")
       .replace(/[\x00-\x1F\x7F]/g, "")
       .trim();
 
-    let summary = "Summary generation unavailable.";
+    let studyMaterials = `
+===SUMMARY===
+Summary unavailable.
+
+===KEY_POINTS===
+Key points unavailable.
+
+===QUIZ===
+Quiz unavailable.
+`;
 
     try {
-      summary = await generateSummary(extractedText);
+      studyMaterials =
+        await generateStudyMaterials(
+          extractedText
+        );
     } catch (error) {
-      console.log("Summary Error:", error);
+      console.log(
+        "Study Materials Error:",
+        error
+      );
     }
 
-    let keyPoints = "Key point generation unavailable.";
-
-    try {
-      keyPoints = await generateKeyPoints(extractedText);
-    } catch (error) {
-      console.log("Key Points Error:", error);
+    if (
+      !studyMaterials.includes(
+        "===SUMMARY==="
+      ) ||
+      !studyMaterials.includes(
+        "===KEY_POINTS==="
+      ) ||
+      !studyMaterials.includes(
+        "===QUIZ==="
+      )
+    ) {
+      throw new Error(
+        "Invalid Gemini response format"
+      );
     }
 
-    let quiz = "Quiz generation unavailable.";
+    const summary = studyMaterials
+      .split("===KEY_POINTS===")[0]
+      .replace("===SUMMARY===", "")
+      .trim();
 
-    try {
-      quiz = await generateQuiz(extractedText);
-    } catch (error) {
-      console.log("Quiz Error:", error);
-    }
+    const keyPoints = studyMaterials
+      .split("===KEY_POINTS===")[1]
+      .split("===QUIZ===")[0]
+      .trim();
+
+    const quiz = studyMaterials
+      .split("===QUIZ===")[1]
+      .trim();
 
     const cleanSummary = summary
       .replace(/\0/g, "")
@@ -173,34 +214,38 @@ const uploadPDF = async (req, res) => {
       .replace(/[\x00-\x1F\x7F]/g, "")
       .trim();
 
-    console.log("About to save document");
-
-    const document = await prisma.document.create({
-      data: {
-        filename: req.file.originalname,
-        extractedText,
-        summary: cleanSummary,
-        keyPoints: cleanKeyPoints,
-        quiz: cleanQuiz,
-      },
-    });
+    const document =
+      await prisma.document.create({
+        data: {
+          filename:
+            req.file.originalname,
+          extractedText,
+          summary: cleanSummary,
+          keyPoints: cleanKeyPoints,
+          quiz: cleanQuiz,
+        },
+      });
 
     console.log("Document saved");
 
     res.json({
-      message: "PDF uploaded successfully",
+      message:
+        "PDF uploaded successfully",
       documentId: document.id,
     });
   } catch (error) {
     console.log(error);
 
     res.status(500).json({
-      error: "Failed to read PDF",
+      error: "Failed to process PDF",
     });
   }
 };
 
-const deleteDocument = async (req, res) => {
+const deleteDocument = async (
+  req,
+  res
+) => {
   try {
     await prisma.document.delete({
       where: {
@@ -209,7 +254,8 @@ const deleteDocument = async (req, res) => {
     });
 
     res.json({
-      message: "Document deleted successfully",
+      message:
+        "Document deleted successfully",
     });
   } catch (error) {
     console.log(error);

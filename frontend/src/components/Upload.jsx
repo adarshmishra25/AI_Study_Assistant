@@ -1,10 +1,17 @@
+import { useState } from "react";
 import axios from "axios";
 
-export const Upload = ({ setDocuments }) => {
+export const Upload = ({ setDocuments, setSelectedId }) => {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleUpload = async (event) => {
     const file = event.target.files[0];
 
     if (!file) return;
+
+    setLoading(true);
+    setError("");
 
     const formData = new FormData();
 
@@ -18,11 +25,13 @@ export const Upload = ({ setDocuments }) => {
 
       localStorage.setItem("currentDocumentId", response.data.documentId);
 
+      setSelectedId(response.data.documentId);
+
       const uploadedDocuments = JSON.parse(
         localStorage.getItem("uploadedDocuments") || "[]",
       );
 
-      uploadedDocuments.push(response.data.documentId);
+      uploadedDocuments.unshift(response.data.documentId);
 
       localStorage.setItem(
         "uploadedDocuments",
@@ -40,13 +49,41 @@ export const Upload = ({ setDocuments }) => {
       console.log(response.data);
     } catch (error) {
       console.error("Upload failed:", error);
+
+      if (error.response?.status === 429) {
+        setError("AI quota exceeded. Please try again later.");
+      } else {
+        setError("Failed to process PDF.");
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <label className="upload-btn">
-      📄 Upload PDF
-      <input type="file" accept=".pdf" hidden onChange={handleUpload} />
-    </label>
+    <>
+      <label className="upload-btn">
+        {loading ? "⏳ Processing PDF..." : "📄 Upload PDF"}
+
+        <input
+          type="file"
+          accept=".pdf"
+          hidden
+          onChange={handleUpload}
+          disabled={loading}
+        />
+      </label>
+
+      {error && (
+        <p
+          style={{
+            color: "red",
+            marginTop: "10px",
+          }}
+        >
+          {error}
+        </p>
+      )}
+    </>
   );
 };

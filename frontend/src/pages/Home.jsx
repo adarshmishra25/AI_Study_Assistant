@@ -9,6 +9,9 @@ import axios from "axios";
 
 export const Home = () => {
   const [documents, setDocuments] = useState([]);
+  const [selectedId, setSelectedId] = useState(
+    localStorage.getItem("currentDocumentId"),
+  );
 
   useEffect(() => {
     const loadDocuments = async () => {
@@ -80,9 +83,14 @@ export const Home = () => {
     <div className="main">
       <Header />
 
-      <Upload setDocuments={setDocuments} />
+      <Upload setDocuments={setDocuments} setSelectedId={setSelectedId} />
 
-      <Documents documents={documents} removeDocument={removeDocument} />
+      <Documents
+        documents={documents}
+        selectedId={selectedId}
+        setSelectedId={setSelectedId}
+        removeDocument={removeDocument}
+      />
 
       <Actions />
     </div>

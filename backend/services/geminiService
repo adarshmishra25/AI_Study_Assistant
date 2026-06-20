@@ -4,93 +4,41 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 
-async function generateSummary(text) {
-  try {
-    const prompt = `
-    Rules:
-- Use plain English.
-- Write one paragraph.
-- Maximum 10 sentences.
-- Do NOT use markdown.
-- Do NOT use headings.
-- Do NOT use bullet points.
-- Do NOT use ** or # symbols.
-    
-    document:
-
-    ${text}
-    `;
-
-    const result = await model.generateContent(prompt);
-
-    return result.response.text();
-  } catch (error) {
-    if (error.status === 429) {
-      return "Gemini quota exceeded. Please try again later.";
-    }
-
-    throw error;
-  }
-}
-
-async function generateKeyPoints(text) {
+const generateStudyMaterials = async (text) => {
   const prompt = `
-Extract ONLY key points from the document.
+You are an AI Study Assistant.
 
-Rules:
-- Return exactly 10 bullet points.
-- Each bullet point must be one short sentence.
-- Do NOT write paragraphs.
-- Do NOT write introductions.
-- Do NOT write conclusions.
-- Start every point with "-".
+Analyze the following material.
 
-Document:
+Return EXACTLY in this format:
 
+===SUMMARY===
+Write a concise summary in 5-8 sentences.
+
+===KEY_POINTS===
+Write exactly 10 bullet points.
+Each bullet point must start with "- ".
+
+===QUIZ===
+Write exactly 5 numbered questions.
+Do not provide answers.
+
+Do not include any additional text before or after these sections.
+
+TEXT:
 ${text}
 `;
 
   const result = await model.generateContent(prompt);
 
-  return result.response.text();
-}
+  const response = result.response.text();
 
+  console.log(response);
 
+  return response;
+};
 
-async function generateQuiz(text) {
-
-  const prompt = `
-Create 5 multiple-choice questions
-from the document.
-
-Format:
-
-Q1. Question?
-
-A) Option
-B) Option
-C) Option
-D) Option
-
-Answer: A
-
-Document:
-
-${text}
-`;
-
-  const result =
-    await model.generateContent(prompt);
-
-  return result.response.text();
-}
-
-
-async function askQuestion(
-  text,
-  question
-) {
-
+async function askQuestion(text, question) {
   const prompt = `
 Answer the question using
 only the information in
@@ -105,18 +53,12 @@ Question:
 ${question}
 `;
 
-  const result =
-    await model.generateContent(
-      prompt
-    );
+  const result = await model.generateContent(prompt);
 
   return result.response.text();
 }
 
-
 module.exports = {
-  generateSummary,
-  generateKeyPoints,
-  generateQuiz,
+  generateStudyMaterials,
   askQuestion,
 };
