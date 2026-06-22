@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import {Typewriter} from "../components/Typewriter";
+import { Typewriter } from "../components/Typewriter";
 
 export const Summary = () => {
   const [summary, setSummary] = useState("");
@@ -31,9 +31,9 @@ export const Summary = () => {
 
   if (loading) {
     return (
-      <div className="outputs-page">
-        <h1>Summary</h1>
-        <p>⏳ Loading Summary...</p>
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Generating Summary...</p>
       </div>
     );
   }
@@ -51,7 +51,8 @@ export const Summary = () => {
     <div className="outputs-page">
       <h1>Summary</h1>
 
-      <div className="content-card "
+      <div
+        className="content-card "
         style={{
           whiteSpace: "pre-wrap",
         }}

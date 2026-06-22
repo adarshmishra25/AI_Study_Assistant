@@ -37,9 +37,9 @@ export const Quiz = () => {
 
   if (loading) {
     return (
-      <div>
-        <h1>Quiz</h1>
-        <p>⏳ Loading Quiz...</p>
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Generating Quiz...</p>
       </div>
     );
   }

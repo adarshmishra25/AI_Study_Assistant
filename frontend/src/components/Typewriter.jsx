@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 
+
 export const Typewriter = ({
   text,
   speed = 20,

@@ -36,7 +36,6 @@ const getDocument = async (req, res) => {
       filename: document.filename,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to fetch document",
@@ -54,7 +53,6 @@ const getSummary = async (req, res) => {
       summary: document.summary,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to fetch summary",
@@ -72,7 +70,6 @@ const getKeyPoints = async (req, res) => {
       keyPoints: document.keyPoints,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to fetch key points",
@@ -90,7 +87,6 @@ const getQuiz = async (req, res) => {
       quiz: document.quiz,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to fetch quiz",
@@ -121,7 +117,6 @@ const postAsk = async (req, res) => {
       answer,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to answer question",
@@ -130,7 +125,6 @@ const postAsk = async (req, res) => {
 };
 
 const uploadPDF = async (req, res) => {
-  console.log("Upload started");
 
   try {
     const dataBuffer = fs.readFileSync(
@@ -226,7 +220,6 @@ Quiz unavailable.
         },
       });
 
-    console.log("Document saved");
 
     res.json({
       message:
@@ -234,7 +227,6 @@ Quiz unavailable.
       documentId: document.id,
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to process PDF",
@@ -258,7 +250,6 @@ const deleteDocument = async (
         "Document deleted successfully",
     });
   } catch (error) {
-    console.log(error);
 
     res.status(500).json({
       error: "Failed to delete document",

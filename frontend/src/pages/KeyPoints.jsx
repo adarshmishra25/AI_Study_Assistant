@@ -35,9 +35,9 @@ export const KeyPoints = () => {
 
   if (loading) {
     return (
-      <div>
-        <h1>Key Points</h1>
-        <p>⏳ Loading Key Points...</p>
+      <div className="loading-container">
+        <div className="spinner"></div>
+        <p>Generating KeyPoints...</p>
       </div>
     );
   }

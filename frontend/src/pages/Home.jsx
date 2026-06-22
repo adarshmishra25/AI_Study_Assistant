@@ -93,6 +93,26 @@ export const Home = () => {
       />
 
       <Actions />
+
+      <footer className="footer">
+        <p>Built by Adarsh Mishra</p>
+
+        <a
+          href="https://github.com/adarshmishra25"
+          target="_blank"
+          rel="noreferrer"
+        >
+          GitHub
+        </a>
+
+        <a
+          href="https://www.linkedin.com/in/adarsh-mishra-0b0061305/"
+          target="_blank"
+          rel="noreferrer"
+        >
+          LinkedIn
+        </a>
+      </footer>
     </div>
   );
 };

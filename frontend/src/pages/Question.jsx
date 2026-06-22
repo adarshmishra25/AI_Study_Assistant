@@ -1,12 +1,14 @@
 import { useState } from "react";
 import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import { useTypewriter } from "../components/useTypewriter";
 
 export const Questions = () => {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const typedAnswer = useTypewriter(answer, 20);
 
   const askQuestion = async () => {
     if (!question.trim()) return;
@@ -70,9 +72,11 @@ export const Questions = () => {
         </p>
       )}
 
-      <div className="answer-card">
-        <ReactMarkdown>{answer}</ReactMarkdown>
-      </div>
+      {answer && (
+        <div className="answer-card">
+          <ReactMarkdown>{typedAnswer}</ReactMarkdown>
+        </div>
+      )}
     </div>
   );
 };
