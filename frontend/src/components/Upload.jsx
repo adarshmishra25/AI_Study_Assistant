@@ -46,7 +46,6 @@ export const Upload = ({ setDocuments, setSelectedId }) => {
         ...prevDocs,
       ]);
 
-      console.log(response.data);
     } catch (error) {
       console.error("Upload failed:", error);
 
