@@ -127,7 +127,7 @@ const postAsk = async (req, res) => {
 const uploadPDF = async (req, res) => {
 
   try {
-    const pdfData = await pdf(req.file.buffer);
+    const pdfData = await pdfParse(req.file.buffer);  
 
     const extractedText = pdfData.text
       .replace(/\0/g, "")
@@ -221,6 +221,7 @@ Quiz unavailable.
       documentId: document.id,
     });
   } catch (error) {
+    console.error(error);
 
     res.status(500).json({
       error: "Failed to process PDF",
