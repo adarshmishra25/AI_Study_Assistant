@@ -127,13 +127,7 @@ const postAsk = async (req, res) => {
 const uploadPDF = async (req, res) => {
 
   try {
-    const dataBuffer = fs.readFileSync(
-      req.file.path
-    );
-
-    const pdfData = await pdfParse(
-      dataBuffer
-    );
+    const pdfData = await pdf(req.file.buffer);
 
     const extractedText = pdfData.text
       .replace(/\0/g, "")
