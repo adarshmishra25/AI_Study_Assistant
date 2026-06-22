@@ -33,8 +33,6 @@ ${text}
 
   const response = result.response.text();
 
-  console.log(response);
-
   return response;
 };
 
