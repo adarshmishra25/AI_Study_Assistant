@@ -24,7 +24,7 @@ export const Home = () => {
 
         for (const id of ids) {
           const response = await axios.get(
-            `http://localhost:5000/documents/${id}`,
+            `https://ai-study-assistant-vssr.onrender.com/documents/${id}`,
           );
 
           loadedDocuments.unshift({
@@ -46,7 +46,7 @@ export const Home = () => {
     const documentToDelete = documents[indexToRemove];
 
     await axios.delete(
-      `http://localhost:5000/documents/${documentToDelete.id}`,
+      `https://ai-study-assistant-vssr.onrender.com/documents/${documentToDelete.id}`,
     );
 
     const uploadedDocuments = JSON.parse(

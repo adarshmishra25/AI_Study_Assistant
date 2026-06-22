@@ -21,7 +21,7 @@ export const Questions = () => {
       const documentId = localStorage.getItem("currentDocumentId");
 
       const response = await axios.post(
-        `http://localhost:5000/ask/${documentId}`,
+        `https://ai-study-assistant-vssr.onrender.com/ask/${documentId}`,
         {
           question,
         },

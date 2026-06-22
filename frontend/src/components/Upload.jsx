@@ -19,7 +19,7 @@ export const Upload = ({ setDocuments, setSelectedId }) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/upload",
+        "https://ai-study-assistant-vssr.onrender.com/upload",
         formData,
       );
 

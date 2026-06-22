@@ -17,7 +17,7 @@ export const KeyPoints = () => {
         const documentId = localStorage.getItem("currentDocumentId");
 
         const response = await axios.get(
-          `http://localhost:5000/keypoints/${documentId}`,
+          `https://ai-study-assistant-vssr.onrender.com/keypoints/${documentId}`,
         );
 
         setKeyPoints(response.data.keyPoints);

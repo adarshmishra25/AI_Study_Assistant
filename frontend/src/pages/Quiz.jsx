@@ -17,7 +17,7 @@ export const Quiz = () => {
         const documentId = localStorage.getItem("currentDocumentId");
 
         const response = await axios.get(
-          `http://localhost:5000/quiz/${documentId}`,
+          `https://ai-study-assistant-vssr.onrender.com/quiz/${documentId}`,
         );
 
         setQuiz(response.data.quiz);

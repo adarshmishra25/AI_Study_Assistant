@@ -13,7 +13,7 @@ export const Summary = () => {
         const documentId = localStorage.getItem("currentDocumentId");
 
         const response = await axios.get(
-          `http://localhost:5000/summary/${documentId}`,
+          `https://ai-study-assistant-vssr.onrender.com/summary/${documentId}`,
         );
 
         setSummary(response.data.summary);
