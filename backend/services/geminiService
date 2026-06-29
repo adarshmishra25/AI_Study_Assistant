@@ -13,14 +13,14 @@ Analyze the following material.
 Return EXACTLY in this format:
 
 ===SUMMARY===
-Write a concise summary in 5-8 sentences.
+Write a concise summary of the document .
 
 ===KEY_POINTS===
-Write exactly 10 bullet points.
+Write important bullet points.
 Each bullet point must start with "- ".
 
 ===QUIZ===
-Write exactly 5 numbered questions.
+Write some important questions.
 Do not provide answers.
 
 Do not include any additional text before or after these sections.
