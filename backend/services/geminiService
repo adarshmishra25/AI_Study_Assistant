@@ -13,7 +13,7 @@ Analyze the following material.
 Return EXACTLY in this format:
 
 ===SUMMARY===
-Write a breif summary of the document and explain everything .
+Write a breif summary of the document and explain everything with minimum of 10 lines.
 
 ===KEY_POINTS===
 Write important bullet points.
