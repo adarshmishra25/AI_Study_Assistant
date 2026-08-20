@@ -1,10 +1,17 @@
+require("dotenv").config();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+function getModel() {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is not defined in environment variables");
+  }
+  const genAI = new GoogleGenerativeAI(apiKey);
+  return genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+}
 
 const generateStudyMaterials = async (text) => {
+  const model = getModel();
   const prompt = `
 You are an AI Study Assistant.
 
@@ -13,7 +20,7 @@ Analyze the following material.
 Return EXACTLY in this format:
 
 ===SUMMARY===
-Write a breif summary of the document and explain everything with minimum of 10 lines.
+Write a brief summary of the document and explain everything with minimum of 10 lines.
 
 ===KEY_POINTS===
 Write important bullet points.
@@ -30,13 +37,12 @@ ${text}
 `;
 
   const result = await model.generateContent(prompt);
-
   const response = result.response.text();
-
   return response;
 };
 
 async function askQuestion(text, question) {
+  const model = getModel();
   const prompt = `
 Answer the question using
 only the information in
@@ -52,7 +58,6 @@ ${question}
 `;
 
   const result = await model.generateContent(prompt);
-
   return result.response.text();
 }
 
