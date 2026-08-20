@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
 const prisma = require("./prismaClient");
@@ -14,10 +15,12 @@ app.use(express.json());
 app.use(documentRoutes);
 
 async function testPrisma() {
-  const documents =
-    await prisma.document.findMany();
-
-  console.log(documents);
+  try {
+    const documents = await prisma.document.findMany();
+    console.log("Prisma connection test successful. Documents count:", documents.length);
+  } catch (error) {
+    console.error("Prisma connection test error:", error.message);
+  }
 }
 
 testPrisma();
