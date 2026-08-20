@@ -16,6 +16,17 @@ app.use(documentRoutes);
 
 async function testPrisma() {
   try {
+    await prisma.$executeRawUnsafe(`
+      CREATE TABLE IF NOT EXISTS "Document" (
+        "id" SERIAL PRIMARY KEY,
+        "filename" TEXT NOT NULL,
+        "extractedText" TEXT NOT NULL,
+        "summary" TEXT,
+        "keyPoints" TEXT,
+        "quiz" TEXT,
+        "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
     const documents = await prisma.document.findMany();
     console.log("Prisma connection test successful. Documents count:", documents.length);
   } catch (error) {
